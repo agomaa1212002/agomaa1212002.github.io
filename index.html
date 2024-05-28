@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plog Page</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header, .footer {
+            background: linear-gradient(90deg, rgba(29,78,216,1) 0%, rgba(37,99,235,1) 100%);
+        }
+        .header-title, .footer p {
+            color: white;
+        }
+        .header-title {
+            animation: slideInDown 1s ease-in-out;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(29,78,216,0.9);
+            z-index: 10;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: white;
+            margin: 0 15px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .navbar a:hover {
+            color: #a5b4fc;
+        }
+        .team-member {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .team-member:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+        .swappable {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transform: scale(0.9);
+        }
+        .visible {
+            opacity: 1;
+            position: relative;
+            transform: scale(1);
+        }
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .carousel-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .carousel-button {
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            transition: background-color 0.3s ease, transform 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+        .carousel-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        .carousel-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #1d4ed8;
+        }
+        .read-more-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .read-more-content.visible {
+            display: block;
+            opacity: 1;
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background-color: gray;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .indicator.active {
+            background-color: white;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .header {
+            background-image: url('DALL·E 2024-05-28 06.51.47 - A modern and visually appealing hero section background image for a professional blog page. The image should feature technology and software elements,.webp');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            height: 60vh; /* Adjust the height as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(29, 78, 216, 0.7);
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+            padding: 40px;
+            border-radius: 10px;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        video {
+            width: 60%; /* Adjust the width as needed */
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <div class="logo">
+                <a href="#" class="text-2xl font-bold flex items-center">
+                    <img src="DALL·E 2024-05-28 05.28.07 - A modern and clean logo for a nutrition mobile application called DEV.JA. The logo should incorporate elements related to health, nutrition, and techn.webp" alt="Logo" class="mr-2" style="height: 40px;">
+                    Plog Page
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#project">Project</a>
+                <a href="#team">Team</a>
+                <a href="#mobile-app">Mobile App</a>
+                <a href="#desktop-system">Desktop System</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="header text-center">
+        <div class="header-content">
+            <h1 class="header-title text-5xl font-bold">Welcome to Our Plog Page</h1>
+            <p class="text-xl text-white mt-4">Empowering Your Digital Life with Cutting-Edge Mobile and Desktop Solutions</p>
+        </div>
+    </header>
+
+    <section id="about" class="bg-white py-16">
+        <div class="container text-center">
+            <h2 class="text-4xl font-semibold mb-8 fade-in">About Us</h2>
+            <p class="text-lg fade-in max-w-2xl mx-auto">We are a team of passionate developers and designers committed to delivering high-quality software solutions that make your life easier and more productive.</p>
+        </div>
+    </section>
+
+    <section id="project" class="bg-gray-200 py-16">
+        <div class="container text-center">
+            <h2 class="text-4xl font-semibold mb-8 fade-in">Our Latest Project</h2>
+            <p class="text-lg fade-in max-w-2xl mx-auto">
+                We are thrilled to unveil our latest project that revolutionizes the way nutrition clinics operate and interact with their patients.
+                <span id="dots">...</span>
+                <span id="more" class="read-more-content">
+                    Our dedicated team has developed a comprehensive clinical system tailored specifically for nutrition clinics, seamlessly integrated with an intuitive patient application.
+                    <br>We are proud of this innovative solution and its potential to transform the nutrition clinic landscape. Our energetic and passionate team is committed to continuous improvement and providing top-notch solutions that meet the evolving needs of healthcare professionals and their patients.
+                    <br>Join us in this exciting journey towards better nutrition and health management!
+                </span>
+            </p>
+            <button id="read-more-btn" class="btn-primary mt-6 fade-in" onclick="toggleReadMore()">Read More</button>
+        </div>
+    </section>
+
+    <section id="team" class="py-16">
+        <div class="container text-center">
+            <h2 class="text-4xl font-semibold mb-12 fade-in">Our Team</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3">
+                <!-- Team Members -->
+                <div class="team-member card">
+                    <img src="jana.jpeg" alt="Team Leader" class="rounded-full mx-auto mb-4 w-32 h-32 object-cover">
+                    <h3 class="text-2xl font-semibold">Jana</h3>
+                    <p class="text-gray-600">Team Leader & Mobile App Developer</p>
+                </div>
+                <div class="team-member card">
+                    <img src="ahmed.jpeg" alt="Desktop Developer" class="rounded-full mx-auto mb-4 w-32 h-32 object-cover">
+                    <h3 class="text-2xl font-semibold">Ahmed</h3>
+                    <p class="text-gray-600">Desktop Developer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mobile-app" class="bg-blue-800 text-white py-16">
+        <div class="container text-center">
+            <h2 class="text-4xl font-semibold mb-12 fade-in">Mobile App</h2>
+            <div class="video-container">
+                <video controls autoplay>
+                    <source src="IMG_0710 (1).mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="carousel-container relative">
+                <div class="swappable visible" id="item1">
+                    <img src="Picture1.png" alt="My Medicines" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Manage your medications with ease.</p>
+                </div>
+                <div class="swappable hidden" id="item2">
+                    <img src="Picture2.png" alt="BMI Calculator" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Calculate your BMI effortlessly.</p>
+                </div>
+                <div class="swappable hidden" id="item3">
+                    <img src="Picture3.png" alt="Payment Information" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Secure and easy payment processing.</p>
+                </div>
+                <div class="swappable hidden" id="item4">
+                    <img src="Picture5.png" alt="Register" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Simple and quick registration process.</p>
+                </div>
+                <div class="swappable hidden" id="item5">
+                    <img src="Picture6.png" alt="Login" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Easy login with multiple options.</p>
+                </div>
+                <div class="swappable hidden" id="item6">
+                    <img src="Picture7.png" alt="Activities Time" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Track your daily activities.</p>
+                </div>
+                <div class="swappable hidden" id="item7">
+                    <img src="Picture9.png" alt="Food Calories" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Monitor your calorie intake.</p>
+                </div>
+                <div class="swappable hidden" id="item8">
+                    <img src="Picture10.png" alt="Video Call" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Stay connected with video calls.</p>
+                </div>
+            </div>
+            <div class="carousel-buttons mt-8">
+                <button class="carousel-button" onclick="prevItem()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15.5 21l-1.42-1.42L7.1 12l6.98-7.58L15.5 3 6 12l9.5 9z"/>
+                    </svg>
+                </button>
+                <button class="carousel-button" onclick="nextItem()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M8.5 21L7.08 19.58 14.9 12 7.1 4.42 8.5 3 18 12l-9.5 9z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="indicators mt-8">
+                <span class="indicator active" onclick="showItem(1)"></span>
+                <span class="indicator" onclick="showItem(2)"></span>
+                <span class="indicator" onclick="showItem(3)"></span>
+                <span class="indicator" onclick="showItem(4)"></span>
+                <span class="indicator" onclick="showItem(5)"></span>
+                <span class="indicator" onclick="showItem(6)"></span>
+                <span class="indicator" onclick="showItem(7)"></span>
+                <span class="indicator" onclick="showItem(8)"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="desktop-system" class="bg-gray-200 py-16">
+        <div class="container text-center">
+            <h2 class="text-4xl font-semibold mb-12 fade-in">Desktop System</h2>
+            <div class="carousel-container relative">
+                <div class="swappable visible" id="desktop1">
+                    <img src="Screenshot 2024-05-27 200606.png" alt="Screenshot 2024-05-27 200606" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Our desktop system offers robust performance and extensive features that ensure you get the best experience in your professional and personal tasks.</p>
+                </div>
+                <div class="swappable hidden" id="desktop2">
+                    <img src="Screenshot 2024-05-27 202136.png" alt="Screenshot 2024-05-27 202136" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Enjoy seamless multitasking and high productivity.</p>
+                </div>
+                <div class="swappable hidden" id="desktop3">
+                    <img src="Screenshot 2024-05-27 195517.png" alt="Screenshot 2024-05-27 195517" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Innovative solutions for efficient clinic management.</p>
+                </div>
+                <div class="swappable hidden" id="desktop4">
+                    <img src="Screenshot 2024-05-27 204349.png" alt="Screenshot 2024-05-27 204349" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">User-friendly interfaces for easy navigation.</p>
+                </div>
+                <div class="swappable hidden" id="desktop5">
+                    <img src="Screenshot 2024-05-27 162211.png" alt="Screenshot 2024-05-27 162211" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Comprehensive data management solutions.</p>
+                </div>
+                <div class="swappable hidden" id="desktop6">
+                    <img src="Screenshot 2024-05-27 153657.png" alt="Screenshot 2024-05-27 153657" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Secure and reliable systems for healthcare professionals.</p>
+                </div>
+                <div class="swappable hidden" id="desktop7">
+                    <img src="Screenshot 2024-05-27 165611.png" alt="Screenshot 2024-05-27 165611" class="rounded-lg shadow-lg mb-5">
+                    <p class="text-xl">Advanced technology for accurate diagnostics.</p>
+                </div>
+            </div>
+            <div class="carousel-buttons mt-8">
+                <button class="carousel-button" onclick="prevDesktop()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15.5 21l-1.42-1.42L7.1 12l6.98-7.58L15.5 3 6 12l9.5 9z"/>
+                    </svg>
+                </button>
+                <button class="carousel-button" onclick="nextDesktop()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M8.5 21L7.08 19.58 14.9 12 7.1 4.42 8.5 3 18 12l-9.5 9z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="indicators mt-8">
+                <span class="indicator active" onclick="showDesktop(1)"></span>
+                <span class="indicator" onclick="showDesktop(2)"></span>
+                <span class="indicator" onclick="showDesktop(3)"></span>
+                <span class="indicator" onclick="showDesktop(4)"></span>
+                <span class="indicator" onclick="showDesktop(5)"></span>
+                <span class="indicator" onclick="showDesktop(6)"></span>
+                <span class="indicator" onclick="showDesktop(7)"></span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer text-center py-10">
+        <p class="text-lg">&copy; 2024 Plog Page. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let currentItem = 1;
+        let currentDesktop = 1;
+
+        function toggleReadMore() {
+            const moreText = document.getElementById("more");
+            const dots = document.getElementById("dots");
+            const btnText = document.getElementById("read-more-btn");
+
+            if (moreText.classList.contains("visible")) {
+                moreText.classList.remove("visible");
+                dots.style.display = "inline";
+                btnText.innerHTML = "Read More"; 
+            } else {
+                moreText.classList.add("visible");
+                dots.style.display = "none";
+                btnText.innerHTML = "Read Less"; 
+            }
+        }
+
+        function showItem(itemNumber) {
+            const items = document.querySelectorAll('.swappable');
+            items.forEach((item, index) => {
+                item.classList.remove('visible');
+                item.classList.add('hidden');
+                document.querySelectorAll('.indicator')[index].classList.remove('active');
+            });
+            document.getElementById('item' + itemNumber).classList.remove('hidden');
+            document.getElementById('item' + itemNumber).classList.add('visible');
+            document.querySelectorAll('.indicator')[itemNumber - 1].classList.add('active');
+        }
+
+        function prevItem() {
+            currentItem--;
+            if (currentItem < 1) currentItem = 8;
+            showItem(currentItem);
+        }
+
+        function nextItem() {
+            currentItem++;
+            if (currentItem > 8) currentItem = 1;
+            showItem(currentItem);
+        }
+
+        function showDesktop(itemNumber) {
+            const items = document.querySelectorAll('.swappable');
+            items.forEach((item, index) => {
+                item.classList.remove('visible');
+                item.classList.add('hidden');
+                document.querySelectorAll('.indicator')[index].classList.remove('active');
+            });
+            document.getElementById('desktop' + itemNumber).classList.remove('hidden');
+            document.getElementById('desktop' + itemNumber).classList.add('visible');
+            document.querySelectorAll('.indicator')[itemNumber - 1].classList.add('active');
+        }
+
+        function prevDesktop() {
+            currentDesktop--;
+            if (currentDesktop < 1) currentDesktop = 7;
+            showDesktop(currentDesktop);
+        }
+
+        function nextDesktop() {
+            currentDesktop++;
+            if (currentDesktop > 7) currentDesktop = 1;
+            showDesktop(currentDesktop);
+        }
+    </script>
+</body>
+</html>
